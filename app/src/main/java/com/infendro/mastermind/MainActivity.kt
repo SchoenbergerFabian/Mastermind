@@ -1,20 +1,23 @@
 package com.infendro.mastermind
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.activity_main.*
+import com.infendro.mastermind.fragments.settings.Setting
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MainActivity : AppCompatActivity() {
 
     companion object{
-        var alphabet = charArrayOf('1','2','3','4','5','6')//ArrayList<Char>()
-        var codeLength = 4
-        var doubleAllowed = true
-        var guessRounds = 12
-        var correctPositionSign = '+'
-        var correctCodeElementSign = '-'
+        lateinit var settings : List<Setting>
+
+        lateinit var alphabet : List<Char>
+        var codeLength = 0
+        var doubleAllowed = false
+        var guessRounds = 0
+        var correctPositionSign = ' '
+        var correctCodeElementSign = ' '
 
         var guesses = ArrayList<String>()
         var code = ""
@@ -118,11 +121,51 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        settings = loadSettings()
         setUp()
     }
 
-    fun loadSettings(){
+    fun loadSettings() : List<Setting>{
+        val list = ArrayList<Setting>()
 
+        val reader = BufferedReader(InputStreamReader(assets.open("config.conf", Context.MODE_PRIVATE)))
+        var line = reader.readLine()
+        while(line!=null){
+            var arguments = line.split("=")
+            if(arguments.size==2){
+                val argument0 = arguments[0].replace(" ","")
+                val argument1 = arguments[1].replace(" ","")
+                when(argument0){
+                    "alphabet" -> {
+                        list.add(Setting(argument0,argument1))
+                        alphabet = argument1.split(",").map { character -> character[0] }
+                    }
+                    "codeLength" -> {
+                        list.add(Setting(argument0,argument1))
+                        codeLength = Integer.parseInt(argument1)
+                    }
+                    "doubleAllowed" -> {
+                        list.add(Setting(argument0,argument1))
+                        doubleAllowed = argument1.toBoolean()
+                    }
+                    "guessRounds" -> {
+                        list.add(Setting(argument0,argument1))
+                        guessRounds = Integer.parseInt(argument1)
+                    }
+                    "correctPositionSign" -> {
+                        list.add(Setting(argument0,argument1))
+                        correctPositionSign = argument1[0]
+                    }
+                    "correctCodeElementSign" -> {
+                        list.add(Setting(argument0,argument1))
+                        correctCodeElementSign = argument1[0]
+                    }
+                }
+            }
+            line = reader.readLine()
+        }
+
+        return list
     }
 
 }

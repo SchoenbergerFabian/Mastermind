@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentSettings"
-        android:name="com.infendro.mastermind.fragments.FragmentSettings"
+        android:name="com.infendro.mastermind.fragments.settings.FragmentSettings"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
