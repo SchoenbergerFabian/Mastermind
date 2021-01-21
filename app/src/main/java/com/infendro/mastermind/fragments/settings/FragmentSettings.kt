@@ -23,6 +23,7 @@ class FragmentSettings : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        MainActivity.hideKeyboard()
         listView.adapter = Listview_Adapter_Settings(MainActivity.settings,requireActivity())
     }
 }

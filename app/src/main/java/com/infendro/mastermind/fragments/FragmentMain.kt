@@ -31,7 +31,7 @@ class FragmentMain : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1,MainActivity.guesses)
+        adapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,MainActivity.guesses)
 
         listView.adapter = adapter
 
@@ -41,6 +41,9 @@ class FragmentMain : Fragment() {
         buttonScore.setOnClickListener { toScore() }
         buttonSubmit.setOnClickListener { submit() }
         buttonNewGame.setOnClickListener { newGame() }
+
+        editTextNextGuess.requestFocus()
+        MainActivity.showKeyboard()
     }
 
     fun newGame(){
@@ -61,8 +64,13 @@ class FragmentMain : Fragment() {
         }else{
             editTextNextGuess.text.clear()
             when(MainActivity.addGuess(guess)){
-                2 -> Toast.makeText(requireContext(),"You won!",Toast.LENGTH_SHORT).show() //TODO add score
-                1 -> Toast.makeText(requireContext(),"You lost!",Toast.LENGTH_SHORT).show() //TODO add score
+                2 -> {
+                    Toast.makeText(requireContext(),"You won!",Toast.LENGTH_SHORT).show()
+                    MainActivity.addScore(guess,MainActivity.guesses.size,System.currentTimeMillis()-MainActivity.start)
+                }
+                1 -> {
+                    Toast.makeText(requireContext(),"You lost!",Toast.LENGTH_SHORT).show()
+                }
             }
             adapter.notifyDataSetChanged()
         }
